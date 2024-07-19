@@ -1,7 +1,7 @@
-package HW_1.services;
+package HW_2.services;
 
-import HW_1.DAO.DAOinterfaceImpl.AccountDAO;
-import HW_1.classes.Account;
+import HW_2.DAO.DAOinterfaceImpl.AccountDAO;
+import HW_2.classes.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

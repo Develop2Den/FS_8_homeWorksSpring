@@ -1,11 +1,9 @@
-package HW_1.controller;
+package HW_2.controller;
 
-import HW_1.classes.Account;
-import HW_1.classes.Customer;
-import HW_1.services.CustomerService;
+import HW_2.classes.Account;
+import HW_2.classes.Customer;
+import HW_2.services.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

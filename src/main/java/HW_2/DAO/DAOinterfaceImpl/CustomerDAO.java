@@ -1,7 +1,7 @@
-package HW_1.DAO.DAOinterfaceImpl;
+package HW_2.DAO.DAOinterfaceImpl;
 
-import HW_1.DAO.DAOinterface.DAO;
-import HW_1.classes.Customer;
+import HW_2.classes.Customer;
+import HW_2.DAO.DAOinterface.DAO;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

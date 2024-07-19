@@ -1,9 +1,8 @@
-package HW_1.controller;
+package HW_2.controller;
 
-import HW_1.classes.Account;
-import HW_1.services.AccountService;
+import HW_2.classes.Account;
+import HW_2.services.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
