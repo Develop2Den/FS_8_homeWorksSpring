@@ -1,0 +1,80 @@
+#server:
+#  port: 9000
+#
+#spring:
+#  jpa:
+#    generate-ddl: true
+#    show-sql: true
+#
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/db007
+#    username: postgres
+#    password: JavaLearn007
+
+server:
+  port: 9000
+
+spring:
+  profiles:
+    active: prod
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE;MODE=PostgreSQL;
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    open-in-view: false
+  sql:
+    init:
+      mode: always
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/db007
+#    driver-class-name: org.postgresql.Driver
+#    username: postgres
+#    password: JavaLearn007
+    url: jdbc:postgresql://ep-purple-wildflower-a2bduym5.eu-central-1.aws.neon.tech/neonDB_tinder?sslmode=require
+    driver-class-name: org.postgresql.Driver
+    username: neonDB_tinder_owner
+    password: 89XinrxabJAI
+  jpa:
+    show-sql: true
+    properties:
+        hibernate:
+          format_sql: true
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+  jackson:
+    serialization:
+      indent_output: true
+    deserialization:
+      fail-on-unknown-properties: false
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    com.fasterxml.jackson: DEBUG
+    org.springframework.boot.autoconfigure.web: DEBUG
+
+
+

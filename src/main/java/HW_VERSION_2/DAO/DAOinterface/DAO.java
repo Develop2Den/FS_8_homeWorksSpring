@@ -1,8 +1,8 @@
-package HW_2.DAO.DAOinterface;
+package HW_VERSION_2.DAO.DAOinterface;
 
 import java.util.List;
 
-public interface DAO <T>{
+public interface DAO<T>{
     T save(T obj);
     boolean delete(T obj);
     void deleteAll(List<T> entities);

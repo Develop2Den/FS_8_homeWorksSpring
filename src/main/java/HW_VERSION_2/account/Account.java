@@ -1,6 +1,9 @@
-package HW_2.classes;
+package HW_VERSION_2.account;
 
-import HW_2.enums.Currency;
+import HW_VERSION_2.utils.AbstractEntity;
+import HW_VERSION_2.customer.Customer;
+import HW_VERSION_2.enums.Currency;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +29,7 @@ public class Account extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonBackReference
     private Customer customer;
 
     public Account(Currency currency, Customer customer) {
