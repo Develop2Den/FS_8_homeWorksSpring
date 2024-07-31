@@ -14,7 +14,6 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "customer")
 public class Account extends AbstractEntity {
 
     @Column(nullable = false, unique = true)
@@ -27,8 +26,9 @@ public class Account extends AbstractEntity {
     @Column(nullable = false)
     private Double balance = 0.0;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
+    @ToString.Exclude
     @JsonBackReference
     private Customer customer;
 

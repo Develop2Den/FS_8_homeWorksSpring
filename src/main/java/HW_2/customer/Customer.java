@@ -42,7 +42,7 @@ public class Customer extends AbstractEntity {
             joinColumns = @JoinColumn(name = "customer_id"),
             inverseJoinColumns = @JoinColumn(name = "employer_id")
     )
-    private Set<Employer> employers = new HashSet<>();
+    private List<Employer> employers = new ArrayList<>();
 
     public Customer(String name, String email, Integer age) {
         this.name = name;

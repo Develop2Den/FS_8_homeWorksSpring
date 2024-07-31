@@ -1,6 +1,7 @@
 package HW_3.account;
 
 
+import HW_3.customer.CustomerFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.List;
 public class AccountController {
 
     private final AccountFacade accountFacade;
+    private final CustomerFacade customerFacade;
 
     @PostMapping
     public ResponseEntity<AccountResponse> createAccount(@RequestBody AccountRequest accountRequest) {

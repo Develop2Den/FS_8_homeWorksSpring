@@ -3,21 +3,18 @@ package HW_3.customer;
 import HW_3.account.Account;
 import HW_3.employer.Employer;
 import HW_3.utils.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = {"accounts", "password"})
 public class Customer extends AbstractEntity {
 
     @Column(name = "name", nullable = false)
@@ -30,22 +27,26 @@ public class Customer extends AbstractEntity {
     private Integer age;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "phone_number")
     private String phoneNumber;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     @JsonManagedReference
     private List<Account> accounts = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonIgnore
     @JoinTable(
             name = "customer_employer",
             joinColumns = @JoinColumn(name = "customer_id"),
             inverseJoinColumns = @JoinColumn(name = "employer_id")
     )
-    private Set<Employer> employers = new HashSet<>();
+    private List<Employer> employers = new ArrayList<>();
 
     public Customer(String name, String email, Integer age, String password, String phoneNumber) {
         this.name = name;

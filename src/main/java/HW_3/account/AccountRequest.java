@@ -1,5 +1,6 @@
 package HW_3.account;
 
+import HW_3.enums.Currency;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import lombok.Data;
 public class AccountRequest {
 
     @NotNull(message = "Currency cannot be null")
-    private String currency;
+    private Currency currency;
 
     @NotNull(message = "Customer ID cannot be null")
     private Long customerId;

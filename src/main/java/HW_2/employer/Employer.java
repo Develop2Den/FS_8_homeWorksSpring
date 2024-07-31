@@ -6,7 +6,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -22,7 +25,7 @@ public class Employer extends AbstractEntity {
     private String address;
 
     @ManyToMany(mappedBy = "employers")
-    private Set<Customer> customers = new HashSet<>();
+    private List<Customer> customers = new ArrayList<>();
 
     public Employer(String name, String address) {
         this.name = name;

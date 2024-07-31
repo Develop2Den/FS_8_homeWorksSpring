@@ -10,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,18 +43,19 @@ public class CustomerFacade {
 
         return customerPage.map(customer -> {
             CustomerResponse response = modelMapper.map(customer, CustomerResponse.class);
-            try {
-                // Преобразование связанных сущностей
+
+            if (customer.getAccounts() != null) {
                 response.setAccounts(customer.getAccounts().stream()
                         .map(account -> modelMapper.map(account, AccountResponse.class))
                         .collect(Collectors.toList()));
+            }
+
+            if (customer.getEmployers() != null) {
                 response.setEmployers(customer.getEmployers().stream()
                         .map(employer -> modelMapper.map(employer, EmployerResponse.class))
                         .collect(Collectors.toList()));
-            } catch (Exception e) {
-                // Логирование или обработка исключения
-                e.printStackTrace();
             }
+
             return response;
         });
     }
@@ -65,17 +65,41 @@ public class CustomerFacade {
     }
 
     public AccountResponse createAccountForCustomer(Long customerId, AccountRequest accountRequest) {
+        // Получаем клиента
         Customer customer = customerService.getOne(customerId);
         if (customer == null) {
             throw new IllegalArgumentException("Customer not found");
         }
-        Account account = modelMapper.map(accountRequest, Account.class);
-        account.setCustomer(customer);
+
+        // Создаем аккаунт с помощью конструктора
+        Account account = new Account(accountRequest.getCurrency(), customer);
+
+        // Устанавливаем начальный баланс из запроса
+        account.setBalance(accountRequest.getBalance());
+
+        // Сохраняем аккаунт
         Account savedAccount = accountService.save(account);
+
+        // Добавляем аккаунт к клиенту
         customer.getAccounts().add(savedAccount);
         customerService.save(customer);
+
+        // Возвращаем ответ
         return modelMapper.map(savedAccount, AccountResponse.class);
     }
+
+//    public AccountResponse createAccountForCustomer(Long customerId, AccountRequest accountRequest) {
+//        Customer customer = customerService.getOne(customerId);
+//        if (customer == null) {
+//            throw new IllegalArgumentException("Customer not found");
+//        }
+//        Account account = modelMapper.map(accountRequest, Account.class);
+//        account.setCustomer(customer);
+//        Account savedAccount = accountService.save(account);
+//        customer.getAccounts().add(savedAccount);
+//        customerService.save(customer);
+//        return modelMapper.map(savedAccount, AccountResponse.class);
+//    }
 
     public boolean deleteAccountFromCustomer(Long customerId, Long accountId) {
         Customer customer = customerService.getOne(customerId);

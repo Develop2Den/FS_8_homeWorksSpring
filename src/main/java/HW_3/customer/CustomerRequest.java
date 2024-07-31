@@ -10,7 +10,7 @@ public class CustomerRequest {
     @NotNull(message = "Name cannot be null")
     private String name;
 
-    @Email(message = "Email should be valid")
+    @Email(regexp = "^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$", message = "Email should be valid")
     @NotNull(message = "Email cannot be null")
     private String email;
 

@@ -3,6 +3,7 @@ package HW_3.customer;
 import HW_3.account.AccountFacade;
 import HW_3.account.AccountRequest;
 import HW_3.account.AccountResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -22,11 +23,9 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
 
     private final CustomerFacade customerFacade;
-    private final AccountFacade accountFacade;
-    private ModelMapper modelMapper = new ModelMapper();
 
     @PostMapping
-    public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
         try {
             CustomerResponse customerResponse = customerFacade.createCustomer(customerRequest);
             return ResponseEntity.ok(customerResponse);
@@ -36,7 +35,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable Long id, @RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable Long id,@Valid @RequestBody CustomerRequest customerRequest) {
         CustomerResponse customerResponse = customerFacade.updateCustomer(id, customerRequest);
         return customerResponse != null ? ResponseEntity.ok(customerResponse) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
