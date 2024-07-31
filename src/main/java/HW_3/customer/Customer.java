@@ -1,21 +1,21 @@
 package HW_3.customer;
 
 import HW_3.account.Account;
-import HW_3.utils.AbstractEntity;
 import HW_3.employer.Employer;
+import HW_3.utils.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @ToString(exclude = {"accounts", "password"})
 public class Customer extends AbstractEntity {
@@ -39,7 +39,7 @@ public class Customer extends AbstractEntity {
     @JsonManagedReference
     private List<Account> accounts = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "customer_employer",
             joinColumns = @JoinColumn(name = "customer_id"),

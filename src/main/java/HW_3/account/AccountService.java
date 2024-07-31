@@ -1,11 +1,13 @@
 package HW_3.account;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AccountService {
 
     private final AccountDaoRepository accountDaoRepository;

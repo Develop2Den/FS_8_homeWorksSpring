@@ -1,18 +1,12 @@
 package HW_3.employer;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.transaction.annotation.Transactional;
-
-
 import lombok.RequiredArgsConstructor;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+@Log4j2
 @RequiredArgsConstructor
 @Service
 public class EmployerService {

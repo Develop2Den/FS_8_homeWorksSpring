@@ -3,6 +3,7 @@ package HW_2.customer;
 import HW_2.utils.AbstractEntity;
 import HW_2.account.Account;
 import HW_2.employer.Employer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +17,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@ToString(exclude = "accounts")
 public class Customer extends AbstractEntity {
 
     @Column(name = "name",nullable = false)
@@ -29,11 +29,14 @@ public class Customer extends AbstractEntity {
     private Integer age;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     @JsonManagedReference
     private List<Account> accounts = new ArrayList<>();
 
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
     @JoinTable(
             name = "customer_employer",
             joinColumns = @JoinColumn(name = "customer_id"),

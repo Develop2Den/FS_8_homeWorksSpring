@@ -2,12 +2,14 @@ package HW_3.customer;
 
 import HW_3.account.Account;
 import HW_3.account.AccountDaoRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class CustomerService {

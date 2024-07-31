@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@ToString(exclude = "customer")
 public class Account extends AbstractEntity {
 
     @Column(nullable = false, unique = true)

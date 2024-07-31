@@ -21,7 +21,7 @@ public class Employer extends AbstractEntity {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @ManyToMany(mappedBy = "employers", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "employers")
     private Set<Customer> customers = new HashSet<>();
 
     public Employer(String name, String address) {

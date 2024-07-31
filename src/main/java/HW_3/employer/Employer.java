@@ -12,7 +12,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@ToString(exclude = "customer")
 public class Employer extends AbstractEntity {
 
     @Column(nullable = false)

@@ -70,7 +70,7 @@ server:
 spring:
   profiles:
     default: local
-    active: local
+    active: prod
 
 ---
 spring:
@@ -108,9 +108,6 @@ spring:
     password: 89XinrxabJAI
   jpa:
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
     hibernate:
       ddl-auto: update
     generate-ddl: true
@@ -120,11 +117,11 @@ spring:
     deserialization:
       fail-on-unknown-properties: false
 
-logging:
-  level:
-    org.springframework.web: DEBUG
-    com.fasterxml.jackson: DEBUG
-    org.springframework.boot.autoconfigure.web: DEBUG
+#logging:
+#  level:
+#    org.springframework.web: DEBUG
+#    com.fasterxml.jackson: DEBUG
+#    org.springframework.boot.autoconfigure.web: DEBUG
 
 
 
