@@ -1,5 +1,7 @@
 package HW_3.account;
 
+import HW_3.account.db.Account;
+import HW_3.account.db.AccountDaoRepository;
 import HW_3.customer.IntegrationTestBase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

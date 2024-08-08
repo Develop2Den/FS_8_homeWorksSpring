@@ -1,11 +1,11 @@
-package HW_3.utils;
+package HW_4.utils;
 
-import HW_3.account.db.Account;
-import HW_3.account.api.dto.AccountResponse;
-import HW_3.customer.db.Customer;
-import HW_3.customer.api.dto.CustomerResponse;
-import HW_3.employer.db.Employer;
-import HW_3.employer.api.dto.EmployerResponse;
+import HW_4.account.api.dto.AccountResponse;
+import HW_4.account.db.Account;
+import HW_4.customer.api.dto.CustomerResponse;
+import HW_4.customer.db.Customer;
+import HW_4.employer.api.dto.EmployerResponse;
+import HW_4.employer.db.Employer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.modelmapper.ModelMapper;
@@ -14,8 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
-
-import java.util.Collections;
 
 
 @Configuration
@@ -39,7 +37,7 @@ public class JpaConfig {
                 map().setName(source.getName());
                 map().setEmail(source.getEmail());
                 map().setAge(source.getAge());
-                map().setPhone(source.getPhoneNumber());
+                map().setPhoneNumber(source.getPhoneNumber());
             }
         });
 

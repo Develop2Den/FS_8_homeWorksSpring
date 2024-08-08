@@ -1,5 +1,7 @@
 package HW_3.customer;
 
+import HW_3.customer.db.Customer;
+import HW_3.customer.db.CustomerDAORepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +15,7 @@ class CustomerDAORepositoryTest extends IntegrationTestBase{
     private static final Long CUSTOMER_ID = 1L;
 
     @Autowired
-    private  CustomerDAORepository customerDAORepository;
+    private CustomerDAORepository customerDAORepository;
 
     @Test
     void testGetById(){

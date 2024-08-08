@@ -1,0 +1,37 @@
+package HW_3.customer.api.dto;
+
+import HW_3.account.api.dto.AccountResponse;
+import HW_3.customer.views.Views;
+import HW_3.employer.api.dto.EmployerResponse;
+import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Data;
+import lombok.ToString;
+
+import java.util.List;
+
+@Data
+public class CustomerResponse {
+
+    @JsonView(Views.Info.class)
+    private Long id;
+
+    @JsonView(Views.Info.class)
+    private String name;
+
+    @JsonView(Views.DetailInfo.class)
+    private String email;
+
+    @JsonView(Views.DetailInfo.class)
+    private Integer age;
+
+    @JsonView(Views.DetailInfo.class)
+    private String phone;
+
+    @JsonView(Views.Info.class)
+    @ToString.Exclude
+    private List<AccountResponse> accounts;
+
+    @JsonView(Views.DetailInfo.class)
+    @ToString.Exclude
+    private List<EmployerResponse> employers;
+}

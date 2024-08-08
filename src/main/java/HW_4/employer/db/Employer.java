@@ -1,29 +1,30 @@
-package HW_2.employer;
+package HW_4.employer.db;
 
-import HW_2.utils.AbstractEntity;
-import HW_2.customer.Customer;
+import HW_4.customer.db.Customer;
+import HW_4.utils.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 public class Employer extends AbstractEntity {
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "address", nullable = false)
+    @Column(nullable = false)
     private String address;
 
     @ManyToMany(mappedBy = "employers")
@@ -35,3 +36,5 @@ public class Employer extends AbstractEntity {
         this.address = address;
     }
 }
+
+
