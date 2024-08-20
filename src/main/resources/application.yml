@@ -1,6 +1,7 @@
 
 server:
   port: 9000
+  address: localhost
 
 spring:
   profiles:
@@ -52,6 +53,13 @@ spring:
       indent_output: true
     deserialization:
       fail-on-unknown-properties: false
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.yourpackage: DEBUG
+    org.springframework.web: DEBUG
+
+
 
 
 

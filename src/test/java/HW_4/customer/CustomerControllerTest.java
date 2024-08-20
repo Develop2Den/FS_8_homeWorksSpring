@@ -5,7 +5,6 @@ import HW_4.account.api.dto.AccountResponse;
 import HW_4.customer.api.CustomerController;
 import HW_4.customer.api.dto.CustomerRequest;
 import HW_4.customer.api.dto.CustomerResponse;
-import HW_4.customer.db.Customer;
 import HW_4.customer.service.CustomerFacade;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,21 +13,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
 import static HW_4.enums.Currency.USD;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -49,6 +38,7 @@ public class CustomerControllerTest {
     }
 
     @Test
+    @WithMockUser
     void testCreateCustomer() throws Exception {
         CustomerRequest customerRequest = new CustomerRequest();
         customerRequest.setName("John Doe");
@@ -66,6 +56,7 @@ public class CustomerControllerTest {
         when(customerFacade.createCustomer(any())).thenReturn(customerResponse);
 
         mockMvc.perform(post("/api/customers")
+                        .with(csrf())
                         .contentType("application/json")
                         .content(new ObjectMapper().writeValueAsString(customerRequest)))
                 .andExpect(status().isOk())
@@ -77,6 +68,7 @@ public class CustomerControllerTest {
     }
 
     @Test
+    @WithMockUser
     void testUpdateCustomer() throws Exception {
         CustomerRequest customerRequest = new CustomerRequest();
         customerRequest.setName("John Doe Updated");
@@ -94,6 +86,7 @@ public class CustomerControllerTest {
         when(customerFacade.updateCustomer(anyLong(), any())).thenReturn(customerResponse);
 
         mockMvc.perform(put("/api/customers/1")
+                        .with(csrf())
                         .contentType("application/json")
                         .content(new ObjectMapper().writeValueAsString(customerRequest)))
                 .andExpect(status().isOk())
@@ -105,15 +98,17 @@ public class CustomerControllerTest {
     }
 
     @Test
+    @WithMockUser
     void testDeleteCustomer() throws Exception {
         when(customerFacade.deleteCustomer(anyLong())).thenReturn(true);
 
-        mockMvc.perform(delete("/api/customers/1"))
+        mockMvc.perform(delete("/api/customers/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
 
     @Test
+    @WithMockUser
     void testGetCustomer() throws Exception {
         CustomerResponse customerResponse = new CustomerResponse();
         customerResponse.setId(1L);
@@ -124,7 +119,7 @@ public class CustomerControllerTest {
 
         when(customerFacade.getCustomer(anyLong())).thenReturn(customerResponse);
 
-        mockMvc.perform(get("/api/customers/1"))
+        mockMvc.perform(get("/api/customers/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("John Doe"))
@@ -134,6 +129,7 @@ public class CustomerControllerTest {
     }
 
     @Test
+    @WithMockUser
     void testCreateAccountForCustomer() throws Exception {
         AccountRequest accountRequest = new AccountRequest();
         accountRequest.setCurrency(USD);
@@ -148,6 +144,7 @@ public class CustomerControllerTest {
         when(customerFacade.createAccountForCustomer(anyLong(), any())).thenReturn(accountResponse);
 
         mockMvc.perform(post("/api/customers/1/accounts")
+                        .with(csrf())
                         .contentType("application/json")
                         .content(new ObjectMapper().writeValueAsString(accountRequest)))
                 .andExpect(status().isOk())
@@ -158,10 +155,11 @@ public class CustomerControllerTest {
     }
 
     @Test
+    @WithMockUser
     void testDeleteAccountFromCustomer() throws Exception {
         when(customerFacade.deleteAccountFromCustomer(anyLong(), anyLong())).thenReturn(true);
 
-        mockMvc.perform(delete("/api/customers/1/accounts/1"))
+        mockMvc.perform(delete("/api/customers/1/accounts/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }

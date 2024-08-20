@@ -4,8 +4,11 @@ import HW_4.account.api.dto.AccountRequest;
 import HW_4.account.api.dto.AccountResponse;
 import HW_4.customer.api.dto.CustomerRequest;
 import HW_4.customer.api.dto.CustomerResponse;
+import HW_4.customer.db.Customer;
 import HW_4.customer.service.CustomerFacade;
+import HW_4.customer.service.CustomerService;
 import HW_4.customer.views.Views;
+import HW_4.enums.Role;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +17,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 
 @Log4j2
 @RestController
 @RequestMapping("/api/customers")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -56,14 +65,28 @@ public class CustomerController {
         return customerResponse != null ? ResponseEntity.ok(customerResponse) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+//    @GetMapping("/me")
+//    @JsonView(Views.Info.class)
+//    public ResponseEntity<CustomerResponse> getCurrentCustomer(Authentication authentication) {
+//        String email = authentication.getName();
+//        CustomerResponse response = customerFacade.getCurrentCustomer(email);
+//        return ResponseEntity.ok(response);
+//    }
+
+
     @GetMapping
     @JsonView(Views.Info.class)
     public ResponseEntity<Page<CustomerResponse>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
+//         , @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Page<CustomerResponse> customerPage = customerFacade.getAllCustomers(PageRequest.of(page, size));
+        Page<CustomerResponse> customerPage = customerFacade.getAllCustomers(PageRequest.of(page, size)
+//                , userDetails.getUsername()
+        );
         log.info("Customers: {}", customerPage);
+//        log.warn(userDetails.getUsername());
+        log.info("Logging is working!");
         return ResponseEntity.ok(customerPage);
     }
 

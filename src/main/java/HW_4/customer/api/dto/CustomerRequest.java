@@ -1,5 +1,8 @@
 package HW_4.customer.api.dto;
 
+import HW_4.enums.Role;
+import HW_4.password.PasswordValidator;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -20,6 +23,11 @@ public class CustomerRequest {
 
     @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Phone number must be valid")
     private String phoneNumber;
+
+    @Valid
+    private PasswordValidator password;
+
+//    private Role role;
 }
 
 

@@ -15,7 +15,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("/api/accounts")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class AccountController {
 

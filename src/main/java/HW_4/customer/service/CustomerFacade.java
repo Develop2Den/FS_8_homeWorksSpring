@@ -8,13 +8,19 @@ import HW_4.employer.api.dto.EmployerResponse;
 import HW_4.customer.api.dto.CustomerRequest;
 import HW_4.customer.api.dto.CustomerResponse;
 import HW_4.customer.db.Customer;
+import HW_4.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -23,14 +29,27 @@ import java.util.stream.Collectors;
 public class CustomerFacade {
 
     private final CustomerService customerService;
+    private final PasswordEncoder passwordEncoder;
     private final AccountService accountService;
     private final ModelMapper modelMapper;
 
     public CustomerResponse createCustomer(CustomerRequest customerRequest) {
+
         Customer customer = modelMapper.map(customerRequest, Customer.class);
+
+        if (customerRequest.getPassword() != null) {
+            String plainPassword = customerRequest.getPassword().getPassword();
+            customer.setPassword(passwordEncoder.encode(plainPassword));
+        }
+
+//        if (customer.getRole() == null) {
+//            customer.setRole(Role.USER);
+//        }
+
         Customer savedCustomer = customerService.save(customer);
         return modelMapper.map(savedCustomer, CustomerResponse.class);
     }
+
 
     public CustomerResponse updateCustomer(Long id, CustomerRequest customerRequest) {
         Customer customer = modelMapper.map(customerRequest, Customer.class);
@@ -45,6 +64,7 @@ public class CustomerFacade {
     }
 
     public Page<CustomerResponse> getAllCustomers(Pageable pageable) {
+
         Page<Customer> customerPage = customerService.findAll(pageable);
 
         log.info("Mapping Customer: {}", customerPage);
@@ -69,6 +89,72 @@ public class CustomerFacade {
             return response;
         });
     }
+
+//    public CustomerResponse getCurrentCustomer(String email) {
+//        Optional<Customer> optionalCustomer = customerService.findByEmail(email);
+//        if (optionalCustomer.isPresent()) {
+//            Customer customer = optionalCustomer.get();
+//            return modelMapper.map(customer, CustomerResponse.class);
+//        } else {
+//            throw new UsernameNotFoundException("Customer not found with email: " + email);
+//        }
+//    }
+
+//    public Page<CustomerResponse> getAllCustomers(Pageable pageable, String currentUserEmail) {
+//        // Получаем текущего пользователя по email
+//        Optional<Customer> currentUserOptional = customerService.findByEmail(currentUserEmail);
+//
+//        if (currentUserOptional.isPresent()) {
+//            Customer currentUser = currentUserOptional.get();
+//
+//            if (currentUser.getRole() == Role.ADMIN) {
+//                // Если роль ADMIN, возвращаем всех клиентов с ролью USER
+//                List<Customer> customers = customerService.findAllByRole(Role.USER);
+//                Page<Customer> customerPage = new PageImpl<>(customers, pageable, customers.size());
+//
+//                return customerPage.map(customer -> {
+//                    CustomerResponse response = modelMapper.map(customer, CustomerResponse.class);
+//
+//                    if (customer.getAccounts() != null) {
+//                        response.setAccounts(customer.getAccounts().stream()
+//                                .map(account -> modelMapper.map(account, AccountResponse.class))
+//                                .collect(Collectors.toList()));
+//                    }
+//
+//                    if (customer.getEmployers() != null) {
+//                        response.setEmployers(customer.getEmployers().stream()
+//                                .map(employer -> modelMapper.map(employer, EmployerResponse.class))
+//                                .collect(Collectors.toList()));
+//                    }
+//
+//                    log.info("Mapped CustomerResponse: {}", response);
+//                    return response;
+//                });
+//            } else {
+//                // Если роль USER, возвращаем только данные текущего пользователя
+//                CustomerResponse response = modelMapper.map(currentUser, CustomerResponse.class);
+//
+//                if (currentUser.getAccounts() != null) {
+//                    response.setAccounts(currentUser.getAccounts().stream()
+//                            .map(account -> modelMapper.map(account, AccountResponse.class))
+//                            .collect(Collectors.toList()));
+//                }
+//
+//                if (currentUser.getEmployers() != null) {
+//                    response.setEmployers(currentUser.getEmployers().stream()
+//                            .map(employer -> modelMapper.map(employer, EmployerResponse.class))
+//                            .collect(Collectors.toList()));
+//                }
+//
+//                log.info("Mapped CustomerResponse: {}", response);
+//
+//                return new PageImpl<>(List.of(response), pageable, 1);
+//            }
+//        } else {
+//            // Если пользователь не найден, выбрасываем исключение
+//            throw new UsernameNotFoundException("User not found with email: " + currentUserEmail);
+//        }
+//    }
 
     public boolean deleteCustomer(Long id) {
         return customerService.deleteById(id);

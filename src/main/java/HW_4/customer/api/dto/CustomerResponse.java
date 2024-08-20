@@ -3,6 +3,8 @@ package HW_4.customer.api.dto;
 import HW_4.account.api.dto.AccountResponse;
 import HW_4.employer.api.dto.EmployerResponse;
 import HW_4.customer.views.Views;
+import HW_4.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.ToString;
@@ -25,6 +27,9 @@ public class CustomerResponse {
 
     @JsonView(Views.DetailInfo.class)
     private String phoneNumber;
+
+//    @JsonView(Views.DetailInfo.class)
+//    private Role role;
 
     @JsonView(Views.Info.class)
     @ToString.Exclude

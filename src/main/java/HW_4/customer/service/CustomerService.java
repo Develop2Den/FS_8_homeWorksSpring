@@ -4,12 +4,18 @@ import HW_4.account.db.Account;
 import HW_4.account.db.AccountDaoRepository;
 import HW_4.customer.db.Customer;
 import HW_4.customer.db.CustomerDAORepository;
+import HW_4.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Log4j2
@@ -23,6 +29,15 @@ public class CustomerService {
     public Customer save(Customer customer) {
         return customerDAORepository.save(customer);
     }
+
+//    public Optional<Customer> findByEmail(String email) {
+//        log.warn("email: " + email);
+//        return customerDAORepository.findByEmail(email);
+//    }
+//
+//    public List<Customer> findAllByRole(Role role) {
+//        return customerDAORepository.findAllByRole(role);
+//    }
 
     public Customer updateCustomer(Long id, Customer customer) {
         if (customerDAORepository.existsById(id)) {
