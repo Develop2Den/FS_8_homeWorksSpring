@@ -1,5 +1,7 @@
 package HW_4.password;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -13,4 +15,13 @@ public class PasswordValidator {
     @Pattern(regexp = ".*[A-Z].*", message = "Password must contain at least one uppercase letter")
     @Pattern(regexp = ".*[a-z].*", message = "Password must contain at least one lowercase letter")
     private String password;
+
+    private PasswordValidator(String password) {
+        this.password = password;
+    }
+
+    @JsonCreator
+    public static PasswordValidator create(@JsonProperty("password") String password) {
+        return new PasswordValidator(password);
+    }
 }

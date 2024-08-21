@@ -30,14 +30,14 @@ public class CustomerService {
         return customerDAORepository.save(customer);
     }
 
-//    public Optional<Customer> findByEmail(String email) {
-//        log.warn("email: " + email);
-//        return customerDAORepository.findByEmail(email);
-//    }
-//
-//    public List<Customer> findAllByRole(Role role) {
-//        return customerDAORepository.findAllByRole(role);
-//    }
+    public Optional<Customer> findByEmail(String email) {
+        log.warn("email: " + email);
+        return customerDAORepository.findByEmail(email);
+    }
+
+    public List<Customer> findAllByRole(Role role) {
+        return customerDAORepository.findAllByRole(role);
+    }
 
     public Customer updateCustomer(Long id, Customer customer) {
         if (customerDAORepository.existsById(id)) {

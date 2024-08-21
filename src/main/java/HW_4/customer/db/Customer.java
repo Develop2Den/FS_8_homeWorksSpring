@@ -35,8 +35,8 @@ public class Customer extends AbstractEntity {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
@@ -56,14 +56,14 @@ public class Customer extends AbstractEntity {
                     Integer age,
                     String password,
                     String phoneNumber
-//                    , Role role
+                    , Role role
     ) {
         this.name = name;
         this.email = email;
         this.age = age;
         this.password = password;
         this.phoneNumber = phoneNumber;
-//        this.role = role;
+        this.role = role;
     }
 }
 

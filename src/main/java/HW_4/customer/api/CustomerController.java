@@ -30,7 +30,7 @@ import java.util.Optional;
 @Log4j2
 @RestController
 @RequestMapping("/api/customers")
-//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -65,13 +65,13 @@ public class CustomerController {
         return customerResponse != null ? ResponseEntity.ok(customerResponse) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-//    @GetMapping("/me")
-//    @JsonView(Views.Info.class)
-//    public ResponseEntity<CustomerResponse> getCurrentCustomer(Authentication authentication) {
-//        String email = authentication.getName();
-//        CustomerResponse response = customerFacade.getCurrentCustomer(email);
-//        return ResponseEntity.ok(response);
-//    }
+    @GetMapping("/me")
+    @JsonView(Views.Info.class)
+    public ResponseEntity<CustomerResponse> getCurrentCustomer(Authentication authentication) {
+        String email = authentication.getName();
+        CustomerResponse response = customerFacade.getCurrentCustomer(email);
+        return ResponseEntity.ok(response);
+    }
 
 
     @GetMapping
@@ -79,13 +79,11 @@ public class CustomerController {
     public ResponseEntity<Page<CustomerResponse>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
-//         , @AuthenticationPrincipal UserDetails userDetails
+         , @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Page<CustomerResponse> customerPage = customerFacade.getAllCustomers(PageRequest.of(page, size)
-//                , userDetails.getUsername()
-        );
+        Page<CustomerResponse> customerPage = customerFacade.getAllCustomers(PageRequest.of(page, size), userDetails.getUsername());
         log.info("Customers: {}", customerPage);
-//        log.warn(userDetails.getUsername());
+        log.warn(userDetails.getUsername());
         log.info("Logging is working!");
         return ResponseEntity.ok(customerPage);
     }

@@ -28,8 +28,8 @@ public class CustomerResponse {
     @JsonView(Views.DetailInfo.class)
     private String phoneNumber;
 
-//    @JsonView(Views.DetailInfo.class)
-//    private Role role;
+    @JsonView(Views.DetailInfo.class)
+    private Role role;
 
     @JsonView(Views.Info.class)
     @ToString.Exclude

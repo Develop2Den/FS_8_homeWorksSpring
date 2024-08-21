@@ -42,9 +42,9 @@ public class CustomerFacade {
             customer.setPassword(passwordEncoder.encode(plainPassword));
         }
 
-//        if (customer.getRole() == null) {
-//            customer.setRole(Role.USER);
-//        }
+        if (customer.getRole() == null) {
+            customer.setRole(Role.USER);
+        }
 
         Customer savedCustomer = customerService.save(customer);
         return modelMapper.map(savedCustomer, CustomerResponse.class);
@@ -54,7 +54,14 @@ public class CustomerFacade {
     public CustomerResponse updateCustomer(Long id, CustomerRequest customerRequest) {
         Customer customer = modelMapper.map(customerRequest, Customer.class);
         customer.setId(id);
-        Customer updatedCustomer = customerService.updateCustomer(id, customer);
+        Customer updatedCustomer = customerService.updateCustomer(id, new Customer(
+                customer.getName(),
+                customer.getEmail(),
+                customer.getAge(),
+                passwordEncoder.encode(customer.getPassword()),
+                customer.getPhoneNumber(),
+                customer.getRole() != null ? customer.getRole() : Role.USER
+        ));
         return updatedCustomer != null ? modelMapper.map(updatedCustomer, CustomerResponse.class) : null;
     }
 
@@ -63,98 +70,95 @@ public class CustomerFacade {
         return customer != null ? modelMapper.map(customer, CustomerResponse.class) : null;
     }
 
-    public Page<CustomerResponse> getAllCustomers(Pageable pageable) {
+//    public Page<CustomerResponse> getAllCustomers(Pageable pageable) {
+//
+//        Page<Customer> customerPage = customerService.findAll(pageable);
+//
+//        log.info("Mapping Customer: {}", customerPage);
+//
+//        return customerPage.map(customer -> {
+//            CustomerResponse response = modelMapper.map(customer, CustomerResponse.class);
+//
+//            if (customer.getAccounts() != null) {
+//                response.setAccounts(customer.getAccounts().stream()
+//                        .map(account -> modelMapper.map(account, AccountResponse.class))
+//                        .collect(Collectors.toList()));
+//                log.info("Mapped Accounts: {}", response.getAccounts());
+//            }
+//
+//            if (customer.getEmployers() != null) {
+//                response.setEmployers(customer.getEmployers().stream()
+//                        .map(employer -> modelMapper.map(employer, EmployerResponse.class))
+//                        .collect(Collectors.toList()));
+//                log.info("Mapped Employers: {}", response.getEmployers());
+//            }
+//            log.info("CustomerResponses: {}", response);
+//            return response;
+//        });
+//    }
 
-        Page<Customer> customerPage = customerService.findAll(pageable);
-
-        log.info("Mapping Customer: {}", customerPage);
-
-        return customerPage.map(customer -> {
-            CustomerResponse response = modelMapper.map(customer, CustomerResponse.class);
-
-            if (customer.getAccounts() != null) {
-                response.setAccounts(customer.getAccounts().stream()
-                        .map(account -> modelMapper.map(account, AccountResponse.class))
-                        .collect(Collectors.toList()));
-                log.info("Mapped Accounts: {}", response.getAccounts());
-            }
-
-            if (customer.getEmployers() != null) {
-                response.setEmployers(customer.getEmployers().stream()
-                        .map(employer -> modelMapper.map(employer, EmployerResponse.class))
-                        .collect(Collectors.toList()));
-                log.info("Mapped Employers: {}", response.getEmployers());
-            }
-            log.info("CustomerResponses: {}", response);
-            return response;
-        });
+    public CustomerResponse getCurrentCustomer(String email) {
+        Optional<Customer> optionalCustomer = customerService.findByEmail(email);
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            return modelMapper.map(customer, CustomerResponse.class);
+        } else {
+            throw new UsernameNotFoundException("Customer not found with email: " + email);
+        }
     }
 
-//    public CustomerResponse getCurrentCustomer(String email) {
-//        Optional<Customer> optionalCustomer = customerService.findByEmail(email);
-//        if (optionalCustomer.isPresent()) {
-//            Customer customer = optionalCustomer.get();
-//            return modelMapper.map(customer, CustomerResponse.class);
-//        } else {
-//            throw new UsernameNotFoundException("Customer not found with email: " + email);
-//        }
-//    }
+    public Page<CustomerResponse> getAllCustomers(Pageable pageable, String currentUserEmail) {
 
-//    public Page<CustomerResponse> getAllCustomers(Pageable pageable, String currentUserEmail) {
-//        // Получаем текущего пользователя по email
-//        Optional<Customer> currentUserOptional = customerService.findByEmail(currentUserEmail);
-//
-//        if (currentUserOptional.isPresent()) {
-//            Customer currentUser = currentUserOptional.get();
-//
-//            if (currentUser.getRole() == Role.ADMIN) {
-//                // Если роль ADMIN, возвращаем всех клиентов с ролью USER
-//                List<Customer> customers = customerService.findAllByRole(Role.USER);
-//                Page<Customer> customerPage = new PageImpl<>(customers, pageable, customers.size());
-//
-//                return customerPage.map(customer -> {
-//                    CustomerResponse response = modelMapper.map(customer, CustomerResponse.class);
-//
-//                    if (customer.getAccounts() != null) {
-//                        response.setAccounts(customer.getAccounts().stream()
-//                                .map(account -> modelMapper.map(account, AccountResponse.class))
-//                                .collect(Collectors.toList()));
-//                    }
-//
-//                    if (customer.getEmployers() != null) {
-//                        response.setEmployers(customer.getEmployers().stream()
-//                                .map(employer -> modelMapper.map(employer, EmployerResponse.class))
-//                                .collect(Collectors.toList()));
-//                    }
-//
-//                    log.info("Mapped CustomerResponse: {}", response);
-//                    return response;
-//                });
-//            } else {
-//                // Если роль USER, возвращаем только данные текущего пользователя
-//                CustomerResponse response = modelMapper.map(currentUser, CustomerResponse.class);
-//
-//                if (currentUser.getAccounts() != null) {
-//                    response.setAccounts(currentUser.getAccounts().stream()
-//                            .map(account -> modelMapper.map(account, AccountResponse.class))
-//                            .collect(Collectors.toList()));
-//                }
-//
-//                if (currentUser.getEmployers() != null) {
-//                    response.setEmployers(currentUser.getEmployers().stream()
-//                            .map(employer -> modelMapper.map(employer, EmployerResponse.class))
-//                            .collect(Collectors.toList()));
-//                }
-//
-//                log.info("Mapped CustomerResponse: {}", response);
-//
-//                return new PageImpl<>(List.of(response), pageable, 1);
-//            }
-//        } else {
-//            // Если пользователь не найден, выбрасываем исключение
-//            throw new UsernameNotFoundException("User not found with email: " + currentUserEmail);
-//        }
-//    }
+        Optional<Customer> currentUserOptional = customerService.findByEmail(currentUserEmail);
+
+        if (currentUserOptional.isPresent()) {
+            Customer currentUser = currentUserOptional.get();
+
+            if (currentUser.getRole() == Role.ADMIN) {
+                List<Customer> customers = customerService.findAllByRole(Role.USER);
+                Page<Customer> customerPage = new PageImpl<>(customers, pageable, customers.size());
+
+                return customerPage.map(customer -> {
+                    CustomerResponse response = modelMapper.map(customer, CustomerResponse.class);
+
+                    if (customer.getAccounts() != null) {
+                        response.setAccounts(customer.getAccounts().stream()
+                                .map(account -> modelMapper.map(account, AccountResponse.class))
+                                .collect(Collectors.toList()));
+                    }
+
+                    if (customer.getEmployers() != null) {
+                        response.setEmployers(customer.getEmployers().stream()
+                                .map(employer -> modelMapper.map(employer, EmployerResponse.class))
+                                .collect(Collectors.toList()));
+                    }
+
+                    log.info("Mapped CustomerResponse: {}", response);
+                    return response;
+                });
+            } else {
+                CustomerResponse response = modelMapper.map(currentUser, CustomerResponse.class);
+
+                if (currentUser.getAccounts() != null) {
+                    response.setAccounts(currentUser.getAccounts().stream()
+                            .map(account -> modelMapper.map(account, AccountResponse.class))
+                            .collect(Collectors.toList()));
+                }
+
+                if (currentUser.getEmployers() != null) {
+                    response.setEmployers(currentUser.getEmployers().stream()
+                            .map(employer -> modelMapper.map(employer, EmployerResponse.class))
+                            .collect(Collectors.toList()));
+                }
+
+                log.info("Mapped CustomerResponse: {}", response);
+
+                return new PageImpl<>(List.of(response), pageable, 1);
+            }
+        } else {
+            return new PageImpl<>(List.of(), pageable, 1);
+        }
+    }
 
     public boolean deleteCustomer(Long id) {
         return customerService.deleteById(id);

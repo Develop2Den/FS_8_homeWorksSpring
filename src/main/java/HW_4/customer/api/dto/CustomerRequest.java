@@ -2,11 +2,13 @@ package HW_4.customer.api.dto;
 
 import HW_4.enums.Role;
 import HW_4.password.PasswordValidator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerRequest {
 
     @Size(min = 2, message = "Name must be at least 2 characters long")
@@ -27,7 +29,7 @@ public class CustomerRequest {
     @Valid
     private PasswordValidator password;
 
-//    private Role role;
+    private Role role;
 }
 
 

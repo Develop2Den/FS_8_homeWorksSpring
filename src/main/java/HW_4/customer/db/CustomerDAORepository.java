@@ -13,6 +13,6 @@ import java.util.Optional;
 @Repository
 public interface CustomerDAORepository extends JpaRepository<Customer, Long> {
     Page<Customer> findAll(Pageable pageable);
-//    List<Customer> findAllByRole(Role role);
-//    Optional<Customer> findByEmail(String email);
+    List<Customer> findAllByRole(Role role);
+    Optional<Customer> findByEmail(String email);
 }

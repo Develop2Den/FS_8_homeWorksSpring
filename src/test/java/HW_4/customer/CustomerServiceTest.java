@@ -31,7 +31,7 @@ public class CustomerServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        customer = new Customer("John Doe", "Doe@do.com", 30,null,  "4444444");
+        customer = new Customer("John Doe", "Doe@do.com", 30, null, "4444444", null);
     }
 
     @Test
