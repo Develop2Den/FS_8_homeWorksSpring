@@ -1,25 +1,23 @@
-package HW_4.security;
+package HW_5.security;
 
-import HW_4.customer.db.Customer;
-import HW_4.customer.service.CustomerService;
-import HW_4.enums.Role;
+import HW_5.customer.db.Customer;
+import HW_5.customer.service.CustomerService;
+import HW_5.enums.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import java.util.Arrays;
 import static org.springframework.http.HttpStatus.OK;
@@ -34,11 +32,8 @@ public class SecurityConfig {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))  // Вернуть 401 вместо редиректа
-                )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/login", "/api/auth").permitAll()
+                        .requestMatchers("/api/login", "/api/auth", "/").permitAll()
                         .requestMatchers("/api/customers/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -69,13 +64,9 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(CustomerService customerService) {
         return email -> {
-            log.info("Attempting to find user with email: {}", email);
             Customer customer = customerService.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-            log.info("Found customer: {}", customer);
             String[] roles = customer.getRole() == Role.ADMIN ? new String[]{"ADMIN"} : new String[]{"USER"};
-            log.info("User Roles: {}", Arrays.toString(roles));
 
             return User.builder()
                     .username(customer.getEmail())

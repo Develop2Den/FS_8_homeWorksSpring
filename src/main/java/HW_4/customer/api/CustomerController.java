@@ -72,21 +72,42 @@ public class CustomerController {
         CustomerResponse response = customerFacade.getCurrentCustomer(email);
         return ResponseEntity.ok(response);
     }
-
-
     @GetMapping
     @JsonView(Views.Info.class)
     public ResponseEntity<Page<CustomerResponse>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-         , @AuthenticationPrincipal UserDetails userDetails
+            @RequestParam(defaultValue = "10") int size,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Page<CustomerResponse> customerPage = customerFacade.getAllCustomers(PageRequest.of(page, size), userDetails.getUsername());
-        log.info("Customers: {}", customerPage);
-        log.warn(userDetails.getUsername());
-        log.info("Logging is working!");
-        return ResponseEntity.ok(customerPage);
+        if (userDetails == null || !userDetails.isEnabled()) {
+            log.warn("Unauthorized access attempt by anonymous or disabled user");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            Page<CustomerResponse> customerPage = customerFacade.getAllCustomers(PageRequest.of(page, size), userDetails.getUsername());
+            log.info("Customers: {}", customerPage);
+            log.info("User: {}", userDetails.getUsername());
+            return ResponseEntity.ok(customerPage);
+        } catch (Exception e) {
+            log.error("Error occurred while fetching customers: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
+//    @GetMapping
+//    @JsonView(Views.Info.class)
+//    public ResponseEntity<Page<CustomerResponse>> getAllCustomers(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size
+//         , @AuthenticationPrincipal UserDetails userDetails
+//    ) {
+//        Page<CustomerResponse> customerPage = customerFacade.getAllCustomers(PageRequest.of(page, size), userDetails.getUsername());
+//        log.info("Customers: {}", customerPage);
+//        log.warn(userDetails.getUsername());
+//        log.info("Logging is working!");
+//        return ResponseEntity.ok(customerPage);
+//    }
 
     @PostMapping("/{customerId}/accounts")
     public ResponseEntity<AccountResponse> createAccountForCustomer(@PathVariable Long customerId, @RequestBody AccountRequest accountRequest) {
