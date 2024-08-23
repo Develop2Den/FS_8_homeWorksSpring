@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import java.util.Arrays;
 import static org.springframework.http.HttpStatus.OK;
@@ -32,6 +34,9 @@ public class SecurityConfig {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/login", "/api/auth", "/").permitAll()
                         .requestMatchers("/api/customers/**").authenticated()
@@ -55,9 +60,9 @@ public class SecurityConfig {
 
     @Bean
     public LogoutSuccessHandler customLogoutSuccessHandler() {
-        return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
-            response.setStatus(OK.value());
-            response.getWriter().flush();
+        return (HttpServletRequest req, HttpServletResponse res, Authentication authentication) -> {
+            res.setStatus(OK.value());
+            res.getWriter().flush();
         };
     }
 
