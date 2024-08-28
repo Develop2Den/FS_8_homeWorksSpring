@@ -3,6 +3,7 @@ package HW_5.account.api;
 
 import HW_5.account.api.dto.AccountRequest;
 import HW_5.account.api.dto.AccountResponse;
+import HW_5.account.db.Account;
 import HW_5.account.db.AccountDaoRepository;
 import HW_5.account.service.AccountFacade;
 import HW_5.webSocket.WebSocketController;
@@ -71,8 +72,13 @@ public class AccountController {
         if (success) {
             log.info("Transfer successful from {} to {}", fromNumber, toNumber);
 
-            Long customerId = accountDaoRepository.findByNumber(fromNumber).getCustomer().getId();
-            log.error(customerId.toString());
+            Account account = accountDaoRepository.findByNumber(fromNumber);
+            if (account == null || account.getCustomer() == null) {
+                log.error("Account or customer not found for account number: {}", fromNumber);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Account or customer not found");
+            }
+
+            Long customerId = account.getCustomer().getId();
             String message = "Transfer of " + amount + " from account " + fromNumber + " to account " + toNumber + " was successful.";
             webSocketController.sendAccountUpdate(customerId, message);
 
